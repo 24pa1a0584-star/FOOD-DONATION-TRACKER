@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied (403){% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+  <div class="empty-state">
+    <div class="text-danger mb-3" style="font-size: 4rem;">
+      <i class="bi bi-shield-x"></i>
+    </div>
+    <h1 class="h3 fw-bold text-dark mb-2">Access Denied (Role Restricted)</h1>
+    <p class="text-muted" style="max-width: 500px; margin: 0 auto 1.5rem auto;">
+      You do not have permission to access this page or perform this action with your current account role
+      {% if current_user.is_authenticated %}(<strong>{{ current_user.role|capitalize }}</strong>){% endif %}.
+    </p>
+    <div class="d-flex justify-content-center gap-2">
+      <a href="{{ url_for('main.home') }}" class="btn btn-outline-food">
+        <i class="bi bi-house-door me-1"></i>Return Home
+      </a>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.my_activity') }}" class="btn btn-primary-food">
+          <i class="bi bi-clock-history me-1"></i>Go to My Activity
+        </a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary-food">
+          <i class="bi bi-box-arrow-in-right me-1"></i>Log In
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

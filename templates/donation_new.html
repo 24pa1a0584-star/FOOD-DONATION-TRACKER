@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Post Extra Food{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="form-card">
+        <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+          <div>
+            <h1 class="h3 fw-bold text-dark mb-1">Post Extra Food Donation</h1>
+            <p class="text-muted small mb-0">Help feed people by donating your excess prepared food</p>
+          </div>
+          <span class="badge bg-success-subtle text-success fs-6 px-3 py-2 border border-success-subtle rounded-pill">
+            <i class="bi bi-clock-history me-1"></i>&lt; 1 Min Post
+          </span>
+        </div>
+
+        <form method="POST" action="{{ url_for('donations.create_donation') }}" novalidate id="donation-form">
+          {{ form.hidden_tag() }}
+
+          <!-- Food Title -->
+          <div class="mb-3">
+            <label for="title" class="form-label">{{ form.title.label }} <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control " + ("is-invalid" if form.title.errors else ""), id="title") }}
+            {% for error in form.title.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+            <div class="form-text text-muted">Be descriptive (e.g., 30 Packets Veg Pulao, 2 Pots Dal Makhani).</div>
+          </div>
+
+          <!-- Food Type & Quantity Row -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="food_type" class="form-label">{{ form.food_type.label }} <span class="text-danger">*</span></label>
+              {{ form.food_type(class="form-select " + ("is-invalid" if form.food_type.errors else ""), id="food_type") }}
+              {% for error in form.food_type.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="quantity" class="form-label">{{ form.quantity.label }} <span class="text-danger">*</span></label>
+              {{ form.quantity(class="form-control " + ("is-invalid" if form.quantity.errors else ""), id="quantity") }}
+              {% for error in form.quantity.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Area & Safe Until Row -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="area" class="form-label">{{ form.area.label }} <span class="text-danger">*</span></label>
+              {{ form.area(class="form-control " + ("is-invalid" if form.area.errors else ""), id="area") }}
+              {% for error in form.area.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+              <div class="form-text text-muted">Area used by NGOs to filter nearby food.</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="safe_until" class="form-label">{{ form.safe_until.label }} <span class="text-danger">*</span></label>
+              {{ form.safe_until(class="form-control " + ("is-invalid" if form.safe_until.errors else ""), id="safe_until") }}
+              {% for error in form.safe_until.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+              <div class="form-text text-muted">Must be in the future & within 12 hours.</div>
+            </div>
+          </div>
+
+          <!-- Full Pickup Address -->
+          <div class="mb-3">
+            <label for="address" class="form-label">{{ form.address.label }} <span class="text-danger">*</span></label>
+            {{ form.address(class="form-control " + ("is-invalid" if form.address.errors else ""), id="address") }}
+            {% for error in form.address.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+            <div class="form-text text-muted">
+              <i class="bi bi-shield-lock-fill text-success me-1"></i>
+              Privacy protected: Full address and contact are hidden from the public until claimed by a verified receiver.
+            </div>
+          </div>
+
+          <!-- Optional Notes -->
+          <div class="mb-4">
+            <label for="notes" class="form-label">{{ form.notes.label }}</label>
+            {{ form.notes(class="form-control " + ("is-invalid" if form.notes.errors else ""), id="notes") }}
+            {% for error in form.notes.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Form Actions -->
+          <div class="d-flex justify-content-between align-items-center pt-2">
+            <a href="{{ url_for('main.my_activity') }}" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-1"></i>Cancel
+            </a>
+            <button type="submit" class="btn btn-primary-food px-4 py-2" id="submit-donation-btn">
+              <i class="bi bi-check-circle me-1"></i>Publish Donation
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

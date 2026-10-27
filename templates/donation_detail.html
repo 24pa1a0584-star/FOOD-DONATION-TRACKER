@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}{{ donation.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
+      
+      <!-- Back Navigation -->
+      <div class="mb-3">
+        {% if current_user.role == 'receiver' %}
+          <a href="{{ url_for('donations.list_donations') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Available Donations
+          </a>
+        {% else %}
+          <a href="{{ url_for('main.my_activity') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to My Activity
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="detail-card">
+        <!-- Header: Title, Status, Food Type -->
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 border-bottom pb-3 mb-4">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              {% if donation.food_type == 'veg' %}
+                <span class="badge-veg">
+                  <i class="bi bi-circle-fill me-1" style="font-size: 0.65rem;"></i>Vegetarian
+                </span>
+              {% else %}
+                <span class="badge-nonveg">
+                  <i class="bi bi-circle-fill me-1" style="font-size: 0.65rem;"></i>Non-Vegetarian
+                </span>
+              {% endif %}
+
+              <span class="badge badge-status-{{ donation.status.lower() }} px-3 py-1 rounded-pill">
+                {{ donation.status }}
+              </span>
+            </div>
+            <h1 class="h3 fw-bold text-dark mb-1">{{ donation.title }}</h1>
+            <p class="text-muted small mb-0">Posted on {{ donation.ready_at|to_ist }} (IST)</p>
+          </div>
+
+          <div class="text-end">
+            <span class="fs-4 fw-bold text-success">{{ donation.quantity }}</span>
+            <span class="text-muted small d-block">Meals (Portions)</span>
+          </div>
+        </div>
+
+        <!-- Food Details Grid -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <div class="p-3 bg-light rounded-3 border h-100">
+              <span class="text-muted small fw-semibold d-block mb-1"><i class="bi bi-geo-alt text-danger me-1"></i>Area / Locality</span>
+              <span class="fw-bold text-dark fs-6">{{ donation.area }}</span>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="p-3 bg-light rounded-3 border h-100">
+              <span class="text-muted small fw-semibold d-block mb-1"><i class="bi bi-clock-history text-warning me-1"></i>Safe Until (Expiry)</span>
+              <div class="fw-bold text-dark fs-6 mb-1">{{ donation.safe_until|to_ist }}</div>
+              {% if donation.status == 'AVAILABLE' %}
+                <span class="countdown-badge" data-safe-until="{{ donation.safe_until|to_iso }}">
+                  <i class="bi bi-hourglass-split"></i>
+                  <span>{{ donation.formatted_time_remaining }}</span>
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if donation.notes %}
+          <div class="mb-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="bi bi-chat-left-text me-1"></i>Donor Notes</h6>
+            <div class="p-3 bg-light rounded-3 border text-secondary">
+              {{ donation.notes }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Pickup Address & Contact Details (Privacy-Protected) -->
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark mb-2"><i class="bi bi-shield-check text-success me-1"></i>Pickup & Contact Information</h6>
+
+          {% if can_view_contact %}
+            <!-- Unlocked Details -->
+            <div class="contact-box">
+              <div class="d-flex align-items-center gap-2 mb-2 text-success fw-bold">
+                <i class="bi bi-unlock-fill"></i> Contact Details Unlocked
+              </div>
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <span class="text-muted small d-block">Donor Name / Organization:</span>
+                  <strong class="text-dark">{{ donation.donor.name }}</strong>
+                </div>
+                <div class="col-md-6">
+                  <span class="text-muted small d-block">Contact Phone:</span>
+                  <a href="tel:{{ donation.donor.phone }}" class="text-success fw-bold text-decoration-none">
+                    <i class="bi bi-telephone-fill me-1"></i>{{ donation.donor.phone }}
+                  </a>
+                </div>
+                <div class="col-12 mt-2 pt-2 border-top">
+                  <span class="text-muted small d-block">Full Pickup Address:</span>
+                  <strong class="text-dark">{{ donation.address }}</strong>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <!-- Locked Privacy Box -->
+            <div class="locked-box">
+              <i class="bi bi-lock-fill fs-2 text-secondary mb-2 d-block"></i>
+              <h6 class="fw-bold text-dark mb-1">Pickup Contact & Address Locked</h6>
+              <p class="small text-muted mb-0">
+                To protect donor privacy and prevent unsolicited visits, the full address and telephone number are revealed immediately after a verified receiver claims this donation.
+              </p>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Claimed / Delivered Info if applicable -->
+        {% if donation.claimed_by %}
+          <div class="p-3 rounded-3 bg-light border mb-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="bi bi-info-circle me-1"></i>Claim Status</h6>
+            <div class="small text-secondary">
+              <div>&bull; <strong>Claimed by:</strong> {{ donation.claimed_by.name }} ({{ donation.claimed_by.area }})</div>
+              <div>&bull; <strong>Claimed at:</strong> {{ donation.claimed_at|to_ist }}</div>
+              {% if donation.delivered_at %}
+                <div class="text-success fw-bold">&bull; <strong>Delivered at:</strong> {{ donation.delivered_at|to_ist }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center pt-3 border-top">
+          <div>
+            {% if donation.status == 'AVAILABLE' and current_user.role == 'donor' and current_user.id == donation.donor_id %}
+              <form method="POST" action="{{ url_for('donations.cancel_donation', id=donation.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline-danger" data-confirm="Are you sure you want to cancel this donation? This action cannot be undone." id="cancel-donation-btn">
+                  <i class="bi bi-x-circle me-1"></i>Cancel Donation
+                </button>
+              </form>
+            {% endif %}
+          </div>
+
+          <div class="d-flex gap-2">
+            {% if donation.status == 'AVAILABLE' and current_user.role == 'receiver' %}
+              <form method="POST" action="{{ url_for('donations.claim_donation', id=donation.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary-food px-4" id="claim-detail-btn">
+                  <i class="bi bi-check2-circle me-1"></i>Claim This Food
+                </button>
+              </form>
+            {% elif donation.status == 'CLAIMED' and current_user.role == 'receiver' and current_user.id == donation.claimed_by_id %}
+              <form method="POST" action="{{ url_for('donations.deliver_donation', id=donation.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-success px-4" data-confirm="Confirm that you have collected and successfully delivered this food?" id="mark-delivered-btn">
+                  <i class="bi bi-box2-check-fill me-1"></i>Mark Delivered
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Share food. Save a meal.{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Hero Section -->
+  <section class="hero-section text-center py-5 px-3">
+    <div class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-semibold mb-3 border border-success-subtle">
+      <i class="bi bi-geo-alt-fill me-1"></i>Hyperlocal Community Food Recovery
+    </div>
+    <h1 class="hero-title display-4 mb-3" id="hero-title">Share food. Save a meal.</h1>
+    <p class="hero-subtitle mb-4">
+      Connecting restaurants, hostels, banquet halls, and families with nearby NGOs and volunteers to rescue surplus cooked food before it spoils.
+    </p>
+
+    <!-- Hero CTA Buttons -->
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-2">
+      {% if current_user.is_authenticated %}
+        {% if current_user.role == 'donor' %}
+          <a href="{{ url_for('donations.create_donation') }}" class="btn btn-primary-food btn-lg px-4" id="hero-donate-btn">
+            <i class="bi bi-plus-circle me-2"></i>Donate Food Now
+          </a>
+          <a href="{{ url_for('main.my_activity') }}" class="btn btn-outline-food btn-lg px-4" id="hero-activity-btn">
+            <i class="bi bi-clock-history me-2"></i>My Donations
+          </a>
+        {% elif current_user.role == 'receiver' %}
+          <a href="{{ url_for('donations.list_donations') }}" class="btn btn-primary-food btn-lg px-4" id="hero-find-btn">
+            <i class="bi bi-basket2 me-2"></i>Find Available Food
+          </a>
+          <a href="{{ url_for('main.my_activity') }}" class="btn btn-outline-food btn-lg px-4" id="hero-receiver-activity-btn">
+            <i class="bi bi-truck me-2"></i>My Pickups
+          </a>
+        {% endif %}
+      {% else %}
+        <a href="{{ url_for('donations.create_donation') }}" class="btn btn-primary-food btn-lg px-4" id="hero-donate-btn">
+          <i class="bi bi-heart-fill me-2"></i>Donate Food
+        </a>
+        <a href="{{ url_for('donations.list_donations') }}" class="btn btn-outline-food btn-lg px-4" id="hero-find-btn">
+          <i class="bi bi-search me-2"></i>Find Food
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Impact Dashboard Numbers -->
+  <section class="mb-5">
+    <div class="text-center mb-4">
+      <h2 class="h4 fw-bold text-dark">Live Community Impact</h2>
+      <p class="text-muted small">Real-time statistics of meals rescued across local communities</p>
+    </div>
+
+    <div class="row g-3">
+      <!-- Card 1: Total Donations Posted -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" id="stat-donations">
+          <div class="stat-number text-success" id="stat-val-donations">{{ stats.total_donations }}</div>
+          <div class="stat-label">Donations Posted</div>
+          <div class="text-muted small mt-1"><i class="bi bi-box2-heart text-success me-1"></i>Total offerings</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Total Delivered -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" id="stat-delivered">
+          <div class="stat-number text-primary" id="stat-val-delivered">{{ stats.total_delivered }}</div>
+          <div class="stat-label">Rescues Delivered</div>
+          <div class="text-muted small mt-1"><i class="bi bi-check2-all text-primary me-1"></i>Successfully reached</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Total Meals Saved -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" id="stat-meals">
+          <div class="stat-number text-danger" id="stat-val-meals">{{ stats.total_meals_saved }}</div>
+          <div class="stat-label">Meals Saved</div>
+          <div class="text-muted small mt-1"><i class="bi bi-people-fill text-danger me-1"></i>People fed</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Active Donors -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" id="stat-donors">
+          <div class="stat-number text-warning" id="stat-val-donors">{{ stats.active_donors }}</div>
+          <div class="stat-label">Active Donors</div>
+          <div class="text-muted small mt-1"><i class="bi bi-building text-warning me-1"></i>Hotels, hostels & homes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="mb-5">
+    <div class="text-center mb-4">
+      <h2 class="h4 fw-bold text-dark">How It Works in 3 Quick Steps</h2>
+      <p class="text-muted small">Fast turnaround because fresh cooked food has only hours before it spoils</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-3 rounded-4 text-center">
+          <div class="rounded-circle bg-success-subtle text-success d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+            1
+          </div>
+          <h5 class="fw-bold">Donor Posts Extra Food</h5>
+          <p class="text-muted small">
+            Hotels, caterers, or households enter food type, portions, pickup address, and a safe expiry window (under 12 hrs) in less than 60 seconds.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-3 rounded-4 text-center">
+          <div class="rounded-circle bg-warning-subtle text-warning d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+            2
+          </div>
+          <h5 class="fw-bold">Receiver Claims in 1-Click</h5>
+          <p class="text-muted small">
+            NGOs and verified volunteers view available listings with real-time countdowns and claim instantly. Double-claim protection prevents wasted trips.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-3 rounded-4 text-center">
+          <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+            3
+          </div>
+          <h5 class="fw-bold">Pickup & Deliver</h5>
+          <p class="text-muted small">
+            The receiver navigates to the unlocked pickup address, collects the fresh food, delivers it to shelter homes or people in need, and marks it delivered.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

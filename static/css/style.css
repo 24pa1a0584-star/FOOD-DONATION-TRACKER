@@ -1,0 +1,335 @@
+/* Food Donation Tracker - Custom Styling */
+:root {
+  --primary-color: #2E7D32;
+  --primary-hover: #1B5E20;
+  --primary-light: #E8F5E9;
+  --accent-orange: #E65100;
+  --accent-blue: #1565C0;
+  --accent-red: #D32F2F;
+  --text-dark: #1E293B;
+  --text-muted: #64748B;
+  --bg-app: #F6FAF6;
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --radius-lg: 12px;
+  --radius-md: 8px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary-color) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 3.5rem 1rem;
+  background: linear-gradient(135deg, #E8F5E9 0%, #FFFFFF 60%, #F1F8E9 100%);
+  border-radius: 16px;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(46, 125, 50, 0.12);
+}
+
+.hero-title {
+  font-weight: 800;
+  color: #1B5E20;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #475569;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-number {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* Donation Cards */
+.donation-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.donation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.donation-card-header {
+  padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+}
+
+.donation-card-body {
+  padding: 0.75rem 1.25rem 1.25rem 1.25rem;
+  flex-grow: 1;
+}
+
+.donation-card-footer {
+  padding: 0.85rem 1.25rem;
+  background-color: #FAFAFA;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* Badges */
+.badge-veg {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #A5D6A7;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+  border-radius: 20px;
+}
+
+.badge-nonveg {
+  background-color: #FFEBEE;
+  color: #C62828;
+  border: 1px solid #EF9A9A;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+  border-radius: 20px;
+}
+
+/* Status Badges */
+.badge-status-available {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #A5D6A7;
+  font-weight: 600;
+}
+
+.badge-status-claimed {
+  background-color: #FFF3E0;
+  color: #E65100;
+  border: 1px solid #FFE0B2;
+  font-weight: 600;
+}
+
+.badge-status-delivered {
+  background-color: #E3F2FD;
+  color: #1565C0;
+  border: 1px solid #90CAF9;
+  font-weight: 600;
+}
+
+.badge-status-cancelled,
+.badge-status-expired {
+  background-color: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+  font-weight: 600;
+}
+
+/* Live Countdown Timer Badge */
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #FFF8E1;
+  color: #F57F17;
+  border: 1px solid #FFE082;
+  border-radius: 20px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+}
+
+.countdown-badge.urgent {
+  background-color: #FFEBEE;
+  color: #C62828;
+  border-color: #FFCDD2;
+  animation: pulse-urgent 1.8s infinite;
+}
+
+@keyframes pulse-urgent {
+  0% { opacity: 1; }
+  50% { opacity: 0.65; }
+  100% { opacity: 1; }
+}
+
+/* Buttons */
+.btn-primary-food {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-food:hover, .btn-primary-food:focus {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.25);
+}
+
+.btn-outline-food {
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 600;
+  background-color: transparent;
+  border-radius: var(--radius-md);
+  padding: 0.45rem 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-food:hover {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+}
+
+/* Forms */
+.form-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+.form-control, .form-select {
+  border-radius: var(--radius-md);
+  border: 1.5px solid #CBD5E1;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+/* Detail Card */
+.detail-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+}
+
+.contact-box {
+  background: #E8F5E9;
+  border: 1.5px dashed #2E7D32;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.locked-box {
+  background: #F8FAFC;
+  border: 1.5px dashed #94A3B8;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  color: #64748B;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+}
+
+.empty-state-icon {
+  font-size: 3.5rem;
+  color: #94A3B8;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+  background: #FFFFFF;
+  border-top: 1px solid var(--card-border);
+  padding: 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}My Activity{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h1 class="h3 fw-bold text-dark mb-1">
+        {% if current_user.role == 'donor' %}
+          Donor Dashboard & Activity
+        {% else %}
+          Receiver Activity & Pickups
+        {% endif %}
+      </h1>
+      <p class="text-muted small mb-0">
+        Logged in as <strong class="text-dark">{{ current_user.name }}</strong> ({{ current_user.role|capitalize }}) &bull; {{ current_user.area }}
+      </p>
+    </div>
+
+    {% if current_user.role == 'donor' %}
+      <a href="{{ url_for('donations.create_donation') }}" class="btn btn-primary-food" id="btn-post-new">
+        <i class="bi bi-plus-circle me-1"></i>Post New Donation
+      </a>
+    {% else %}
+      <a href="{{ url_for('donations.list_donations') }}" class="btn btn-primary-food" id="btn-find-more">
+        <i class="bi bi-basket2 me-1"></i>Find More Food
+      </a>
+    {% endif %}
+  </div>
+
+  <!-- Activity Metrics Bar -->
+  <div class="row g-3 mb-4">
+    {% if current_user.role == 'donor' %}
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-dark">{{ stats.total_posted }}</div>
+          <div class="text-muted small fw-semibold">Total Posted</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-success">{{ stats.active_count }}</div>
+          <div class="text-muted small fw-semibold">Active Available</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-primary">{{ stats.delivered_count }}</div>
+          <div class="text-muted small fw-semibold">Delivered</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-danger">{{ stats.meals_fed }}</div>
+          <div class="text-muted small fw-semibold">Meals Fed</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-dark">{{ stats.total_claimed }}</div>
+          <div class="text-muted small fw-semibold">Total Rescues</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-warning">{{ stats.pending_pickup }}</div>
+          <div class="text-muted small fw-semibold">Pending Delivery</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-primary">{{ stats.delivered_count }}</div>
+          <div class="text-muted small fw-semibold">Delivered</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border text-center shadow-sm">
+          <div class="fs-3 fw-bold text-success">{{ stats.meals_distributed }}</div>
+          <div class="text-muted small fw-semibold">Meals Distributed</div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Donations Table / Cards -->
+  {% if donations %}
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="fw-bold text-dark mb-0">
+          {% if current_user.role == 'donor' %}
+            Your Food Donations
+          {% else %}
+            Your Claimed & Delivered Food
+          {% endif %}
+        </h5>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" style="min-width: 180px;">Food Item</th>
+              <th scope="col">Type</th>
+              <th scope="col">Meals</th>
+              <th scope="col">Status</th>
+              {% if current_user.role == 'donor' %}
+                <th scope="col">Claimed By</th>
+              {% else %}
+                <th scope="col">Donor & Contact</th>
+              {% endif %}
+              <th scope="col">Safe Until / Time</th>
+              <th scope="col" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in donations %}
+              <tr id="row-donation-{{ d.id }}">
+                <td>
+                  <a href="{{ url_for('donations.donation_detail', id=d.id) }}" class="fw-bold text-dark text-decoration-none">
+                    {{ d.title }}
+                  </a>
+                  <div class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ d.area }}</div>
+                </td>
+                <td>
+                  {% if d.food_type == 'veg' %}
+                    <span class="badge-veg small">Veg</span>
+                  {% else %}
+                    <span class="badge-nonveg small">Non-Veg</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <span class="fw-semibold">{{ d.quantity }}</span>
+                </td>
+                <td>
+                  <span class="badge badge-status-{{ d.status.lower() }} px-2 py-1 rounded-pill">
+                    {{ d.status }}
+                  </span>
+                </td>
+                <td>
+                  {% if current_user.role == 'donor' %}
+                    {% if d.claimed_by %}
+                      <span class="fw-semibold text-primary">{{ d.claimed_by.name }}</span>
+                      <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ d.claimed_by.phone }}</div>
+                    {% else %}
+                      <span class="text-muted fst-italic">Unclaimed</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="fw-semibold text-dark">{{ d.donor.name }}</span>
+                    <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ d.donor.phone }}</div>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if d.status == 'AVAILABLE' %}
+                    <span class="countdown-badge small" data-safe-until="{{ d.safe_until|to_iso }}">
+                      <i class="bi bi-hourglass-split"></i>
+                      <span>{{ d.formatted_time_remaining }}</span>
+                    </span>
+                  {% else %}
+                    <span class="text-muted small">{{ d.safe_until|to_ist('%d %b, %I:%M %p') }}</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  <div class="d-inline-flex gap-1">
+                    <a href="{{ url_for('donations.donation_detail', id=d.id) }}" class="btn btn-sm btn-outline-secondary" title="View Details">
+                      <i class="bi bi-eye"></i>
+                    </a>
+
+                    {% if current_user.role == 'donor' and d.status == 'AVAILABLE' %}
+                      <form method="POST" action="{{ url_for('donations.cancel_donation', id=d.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" data-confirm="Are you sure you want to cancel this donation?" title="Cancel Donation">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </form>
+                    {% endif %}
+
+                    {% if current_user.role == 'receiver' and d.status == 'CLAIMED' %}
+                      <form method="POST" action="{{ url_for('donations.deliver_donation', id=d.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-success" data-confirm="Confirm this food has been delivered to beneficiaries?" title="Mark Delivered">
+                          <i class="bi bi-check2"></i> Deliver
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="bi bi-calendar2-heart"></i>
+      </div>
+      <h3 class="h4 fw-bold text-dark">No Activity Yet</h3>
+      <p class="text-muted" style="max-width: 450px; margin: 0.5rem auto 1.5rem auto;">
+        {% if current_user.role == 'donor' %}
+          You haven't posted any food donations yet. Post extra cooked food to help feed hungry people nearby!
+        {% else %}
+          You haven't claimed any donations yet. Browse available food donations to start distributing meals.
+        {% endif %}
+      </p>
+      {% if current_user.role == 'donor' %}
+        <a href="{{ url_for('donations.create_donation') }}" class="btn btn-primary-food">
+          <i class="bi bi-plus-circle me-1"></i>Post First Donation
+        </a>
+      {% else %}
+        <a href="{{ url_for('donations.list_donations') }}" class="btn btn-primary-food">
+          <i class="bi bi-basket2 me-1"></i>Browse Available Food
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
